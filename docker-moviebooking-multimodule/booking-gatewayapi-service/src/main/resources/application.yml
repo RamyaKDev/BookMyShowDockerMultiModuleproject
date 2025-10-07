@@ -1,0 +1,56 @@
+spring:
+ application:
+    name: gateway-api
+ cloud:
+   gateway:
+       routes:
+#http://localhost:9000/catalog/v1/** ---->http://localhost:8081/movies-service/v1/**
+          - id: movieService
+            uri: http://movie-catalog:8081
+            predicates: 
+             - Path= /catalog/v1/**  
+            filters:
+              - RewritePath=/catalog/v1/(?<segment>.*),/movies-service/v1/${segment}
+
+#http://localhost:9000/theatre/v1/** ---->http://localhost:8082/theatres-service/v1/**
+          - id: theatreService
+            uri: http://theatre-service:8082
+            predicates: 
+              - Path= /theatre/v1/**
+            filters:
+             - RewritePath=/theatre/v1/(?<segment>.*),/theatres-service/v1/${segment}
+
+ #http://localhost:9000/show/v1/** ---->http://localhost:8083/shows-service/v1/**
+          - id: showService
+            uri: http://show-service:8083
+            predicates: 
+               - Path= /show/v1/**
+            filters:
+              - RewritePath=/show/v1/(?<segment>.*),/shows-service/v1/${segment}
+
+# http://localhost:9000/booking/v1/** ---->http://localhost:8084/bookings-service/v1/**
+          - id: bookingService
+            uri: http://booking-service:8084
+            predicates: 
+              - Path= /booking/v1/**
+            filters:
+              - RewritePath=/booking/v1/(?<segment>.*),/bookings-service/v1/${segment}
+# http://localhost:9000/user/v1/** ---->http://localhost:8085/users-service/v1/**
+          - id: userService
+            uri: http://user-service:8085
+            predicates: 
+              - Path= /user/v1/**
+            filters:
+              - RewritePath=/user/v1/(?<segment>.*),/users-service/v1/${segment}
+
+#add routing for the services
+# Enable CORS for Cross-Origin Acces
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'   
+
+server:
+  port: 9000

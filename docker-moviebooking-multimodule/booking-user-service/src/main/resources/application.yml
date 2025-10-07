@@ -1,0 +1,17 @@
+
+jwt:
+  secret: securityjwt
+
+server:
+  port: 8085
+
+
+spring:
+  application:
+    name: user-service
+#provide cloud config uri
+  config:
+    import: configserver:http://config-server:8888
+
+
+ 

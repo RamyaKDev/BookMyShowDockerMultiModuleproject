@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: config-server
+# specify the location of git hub repo
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/RamyaKDev/BookMicroMultiGitKafka.git
+server:
+  port: 8888
+
+#access the yml file as
+#http://localhost:8888/movie-catalog.yml

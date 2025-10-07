@@ -1,0 +1,27 @@
+
+
+  
+
+server:
+  port: 8082
+
+
+spring:
+  application:
+    name: theatre-service
+#provide cloud config uri
+  config:
+    import: configserver:http://config-server:8888
+##datasource specific properties
+#  datasource:
+#    username: root
+#    password: abcd
+#    url: jdbc:mysql://localhost:3306/msmoviedb
+##jpa properties
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+
+

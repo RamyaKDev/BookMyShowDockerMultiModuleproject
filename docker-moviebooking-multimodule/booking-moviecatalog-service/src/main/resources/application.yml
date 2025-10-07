@@ -1,0 +1,25 @@
+
+  
+
+server:
+  port: 8081
+
+
+spring:
+  application:
+    name: movie-catalog
+#provide cloud config uri
+  config:
+    import: configserver:http://config-server:8888	
+
+##datasource specific properties
+#  datasource:
+#    username: root
+#    password: abcd
+#    url: jdbc:mysql://localhost:3306/msmoviedb
+##jpa properties
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
