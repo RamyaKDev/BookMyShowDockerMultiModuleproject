@@ -1,0 +1,29 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: notification-service
+
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9092
+      group-id: notification-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        "[spring.json.trusted.packages]": "*"
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ramyakpass@gmail.com
+    password: godd kmij bhcj dhja
+    properties:
+        mail:
+             smtp:
+                auth: true
+                starttls:
+                   enable: true
+
+

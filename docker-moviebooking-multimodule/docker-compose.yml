@@ -1,0 +1,164 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mybookingcontainer
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: abcd
+      MYSQL_DATABASE: moviebookingdb
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - movie-network
+
+  movie-catalog:
+    build:
+      context: ./booking-moviecatalog-service
+      dockerfile: Dockerfile
+    image: movie-catalog
+    container_name: catalog-container
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+      - mysql
+    networks:
+      - movie-network
+
+  theatre-service:
+    build:
+      context: ./booking-theatre-service
+      dockerfile: Dockerfile
+    image: theatre-service
+    container_name: theatre-container
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - mysql
+    networks:
+      - movie-network
+
+  show-service:
+    build:
+      context: ./booking-show-service
+      dockerfile: Dockerfile
+    image: show-service
+    container_name: show-container
+    ports:
+      - "8083:8083"
+    depends_on:
+      - movie-catalog
+      - theatre-service
+    networks:
+      - movie-network
+
+  booking-service:
+    build:
+      context: ./booking-ticketbooking-service
+      dockerfile: Dockerfile
+    image: booking-service
+    container_name: booking-container
+    ports:
+      - "8084:8084"
+    depends_on:
+      - show-service
+      - user-service
+      - config-server
+      - mysql
+      - kafka
+    networks:
+      - movie-network
+
+  user-service:
+    build:
+      context: ./booking-user-service
+      dockerfile: Dockerfile
+    image: user-service
+    container_name: user-container
+    ports:
+      - "8085:8085"
+    depends_on:
+      - config-server
+      - mysql
+    networks:
+      - movie-network
+
+  notification-service:
+    build:
+      context: ./booking-notification-service
+      dockerfile: Dockerfile
+    image: notification-service
+    container_name: notification-container
+    ports:
+      - "8088:8088"
+    depends_on:
+      - kafka
+    networks:
+      - movie-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - movie-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9094
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - movie-network
+
+  gateway-api:
+    build:
+      context: ./booking-gatewayapi-service
+      dockerfile: Dockerfile
+    image: gateway-api
+    container_name: gateway-api
+    ports:
+      - "9000:9000"
+    depends_on:
+      - movie-catalog
+      - theatre-service
+      - show-service
+      - booking-service
+      - user-service
+    networks:
+      - movie-network
+
+  config-server:
+    build:
+      context: ./booking-config-server
+      dockerfile: Dockerfile
+    image: config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - movie-network
+
+networks:
+  movie-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

@@ -66,7 +66,7 @@ public class JwtUserController {
 		return ResponseEntity.ok(token);
 	}
 
-	// http://localhost:8085/users-service/v1/users/userId/1
+	// http://localhost:8085/users-service/v1/users/userId/200
     @GetMapping("users/userId/{userId}")
     public ResponseEntity<JwtUserRequest> getUserById(@PathVariable int userId) {
     	JwtUserRequest jwtUser=userServiceImpl.getUserbyId(userId);

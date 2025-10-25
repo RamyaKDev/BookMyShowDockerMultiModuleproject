@@ -1,3 +1,5 @@
+jwt:
+  secret: securityjwt
 
 server:
   port: 8084
@@ -6,6 +8,11 @@ server:
 spring:
   application:
     name: booking-service
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+       key-serializer: org.apache.kafka.common.serialization.StringSerializer
+       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 #provide cloud config uri
   config:
     import: configserver:http://config-server:8888
@@ -20,6 +27,9 @@ spring:
 #    hibernate:
 #      ddl-auto: update
 #    show-sql: true
+order:
+   topic:
+     name: booking-topic
 
 management:
    endpoints:
@@ -35,16 +45,47 @@ management:
      circuitbreakers:
        enabled: true
 resilience4j:
-  circuitbreaker:
-   instances:
-    cart-cbservice:
-     sliding-window-type: COUNT_BASED
-     failure-rate-threshold: 50
-     minimum-number-of-calls: 5
-     automatic-transition-from-open-to-half-open-enabled: true
-     wait-duration-in-open-state: 5s
-     permitted-number-of-calls-in-half-open-state: 3
-     sliding-window-size: 10
-     register-health-indicator: true
-     record-exceptions:
-       - java.lang.Exception	 
+   circuitbreaker:
+     instances:
+       show-cbservice:
+         register-health-indicator: true
+         sliding-window-size: 5
+         failure-rate-threshold: 50
+         wait-duration-in-open-state: 10s
+         permitted-number-of-calls-in-half-open-state: 2
+         automatic-transition-from-open-to-half-open-enabled: true
+         record-exceptions:
+           - java.net.ConnectException
+           - java.net.SocketTimeoutException
+           - java.net.UnknownHostException
+           - org.springframework.web.client.ResourceAccessException
+           - org.springframework.web.client.HttpServerErrorException
+           - org.springframework.web.client.HttpClientErrorException
+           - java.net.UnknownHostException 
+         ignore-exceptions:
+           - com.ticketbookingapp.exception.ShowNotFoundException
+           - com.ticketbookingapp.exception.BookingNotFoundException
+           - java.lang.IllegalArgumentException
+
+       user-cbservice:
+         register-health-indicator: true
+         sliding-window-size: 5
+         failure-rate-threshold: 50
+         wait-duration-in-open-state: 10s
+         permitted-number-of-calls-in-half-open-state: 2
+         automatic-transition-from-open-to-half-open-enabled: true
+         record-exceptions:
+           - java.net.ConnectException
+           - java.net.SocketTimeoutException
+           - java.net.UnknownHostException
+           - org.springframework.web.client.ResourceAccessException
+           - org.springframework.web.client.HttpServerErrorException
+           - org.springframework.web.client.HttpClientErrorException
+           - java.net.UnknownHostException 
+         ignore-exceptions:
+           - com.ticketbookingapp.exception.UserNotFoundException
+           - java.lang.IllegalArgumentException
+
+logging:
+   level:
+     io.github.resilience4j.circuitbreaker: DEBUG

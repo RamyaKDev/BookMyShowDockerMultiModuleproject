@@ -13,4 +13,6 @@ public class User {
 	private Integer userId;
 	private String name;
 	private String email;
+	 // extra field for error handling
+    private String errorMessage;
 }

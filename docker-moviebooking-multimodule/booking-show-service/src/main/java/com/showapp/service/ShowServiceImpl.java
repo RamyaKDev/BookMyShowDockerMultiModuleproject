@@ -93,20 +93,35 @@ public class ShowServiceImpl implements IShowService {
 	@Override
 	public void updateShow(ShowDto showDto) {
 
-		// validate movie exists
-		Movie movie = movieClient.getByMovieId(showDto.getMovieId());
+	    // Validate movie and theatre
+	    Movie movie = movieClient.getByMovieId(showDto.getMovieId());
+	    Theatre theatre = theatreClient.getByTheatreId(showDto.getTheatreId());
 
-		// validate theatre exist
-		Theatre theatre = theatreClient.getByTheatreId(showDto.getTheatreId());
-		if (movie == null)
-			throw new MovieNotFoundException("No movie found ");
+	    if (movie == null)
+	        throw new MovieNotFoundException("No movie found ");
+	    if (theatre == null)
+	        throw new TheatreNotFoundException("No theatre found ");
 
-		if (theatre == null)
-			throw new TheatreNotFoundException("No theatre found ");
+	    // ✅ Fetch existing show
+	    Show existingShow = showRepository.findById(showDto.getShowId())
+	            .orElseThrow(() -> new ShowNotFoundException("Invalid show id"));
 
-		Show show = mapper.map(showDto, Show.class);
-		showRepository.save(show);
+	    // ✅ Update only fields that can change
+	    existingShow.setShowId(showDto.getShowId());
+	    existingShow.setMovieId(showDto.getMovieId());
+	    existingShow.setTheatreId(showDto.getTheatreId());
+	    existingShow.setShowDate(showDto.getShowDate());
+	    existingShow.setShowTime(showDto.getShowTime());
+	    existingShow.setMovieTitle(showDto.getMovieTitle());
+	    existingShow.setTotalNoOfSeats(showDto.getTotalNoOfSeats());
+	    existingShow.setPrice(showDto.getPrice());
+
+	    // ✅ Save updated entity
+	    //showRepository.save(existingShow);
+	    mapper.map(showDto, existingShow);
+	    showRepository.save(existingShow);
 	}
+
 
 	
 

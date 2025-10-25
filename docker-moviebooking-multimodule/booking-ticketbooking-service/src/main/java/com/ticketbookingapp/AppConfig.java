@@ -14,7 +14,7 @@ public class AppConfig {
 	return new ModelMapper();
 }
 	//creating bean for RestTemplate
-	@LoadBalanced
+	//@LoadBalanced
 	  @Bean
 	    RestTemplate restTemplate() {
 	        return new RestTemplate();

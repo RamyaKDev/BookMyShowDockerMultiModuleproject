@@ -23,4 +23,6 @@ public class Show {
     private int movieId;    
     private int theatreId;// Reference to Theatre Service
     private int totalNoOfSeats;
+    // extra field for error handling
+    private String errorMessage;
 }

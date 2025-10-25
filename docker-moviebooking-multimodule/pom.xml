@@ -18,6 +18,7 @@
   <module>booking-theatre-service</module>
   <module>booking-ticketbooking-service</module>
    <module>booking-user-service</module>
+   <module>booking-notification-service</module>
   </modules>
   <properties>
 		<java.version>21</java.version>

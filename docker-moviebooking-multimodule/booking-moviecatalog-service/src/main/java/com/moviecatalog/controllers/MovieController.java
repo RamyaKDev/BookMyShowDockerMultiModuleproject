@@ -51,7 +51,7 @@ public class MovieController {
 
 	}
 
-	// http://localhost:8081/movies-service/v1/movies/movieId/2
+	// http://localhost:8081/movies-service/v1/admin/movies/movieId/2
 	@DeleteMapping("/admin/movies/movieId/{movieId}")
 	ResponseEntity<Void> deleteMovie(@PathVariable int movieId) {
 		movieService.deleteMovie(movieId);
