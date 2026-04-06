@@ -32,7 +32,7 @@ All services run inside Docker containers and are connected through a Docker bri
 Now, when a booking is created:
     1. BookingService publishes a Kafka event (OrderEvent) to topic booking-topic.
     2. NotificationService consumes the event.
-    3. It sends an email (or log) to the user.![Booking flow](https://github.com/user-attachments/assets/291dee8b-405c-46de-a3a4-0fc379b8aab7)
+    3. It sends an email (or log) to the user.
 ![Booking flow](https://github.com/user-attachments/assets/291dee8b-405c-46de-a3a4-0fc379b8aab7)
 
 
